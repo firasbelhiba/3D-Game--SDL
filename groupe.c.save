@@ -1,0 +1,208 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_mixer.h>
+
+void pause();
+
+int main(int argc, char **argv[])
+{
+	SDL_Surface *ecran = NULL , *image = NULL , *imagepng = NULL ;//creer une surface pour creer une fenetre
+	SDL_Surface *texte = NULL , *btn_play = NULL , *btn_options = NULL , *btn_quit = NULL ;
+	int interieur=0 , interieur2 = 0;
+	
+	SDL_Init(SDL_INIT_VIDEO);//ouvrir fenetre vide
+	
+	ecran  = SDL_SetVideoMode(800,600,32, SDL_HWSURFACE | SDL_DOUBLEBUF);//creer une fenetre (SDL_RESIZABLE/SDL_NOFRAME/SDL_FULLSCREEN)
+	SDL_WM_SetCaption("fenetre sdl",NULL);// creer titre de la fenetre
+
+	//SDL_FillRect(ecran , NULL,SDL_MapRGB(ecran->fo
+rmat,30,15,220);//ajouter couleur au fond
+	
+	SDL_Rect position_fond;//creer une position de l image
+	position_fond.x=0;
+	position_fond.y=0;
+	image = IMG_Load("background.png");//chargement de l image
+	SDL_BlitSurface(image,NULL,ecran,&position_fond);
+		
+	SDL_Rect position_btn_play;//creer une position de l image
+	position_btn_play.x=290;
+	position_btn_play.y=200;
+	btn_play = IMG_Load("btn_play.png");
+	SDL_BlitSurface(btn_play,NULL,ecran,&position_btn_play);
+
+	SDL_Rect position_btn_options;//creer une position de l image
+        position_btn_options.x=290;
+        position_btn_options.y=300;
+        btn_options = IMG_Load("btn_options.png");
+        SDL_BlitSurface(btn_options,NULL,ecran,&position_btn_options);
+
+	SDL_Rect position_btn_quit;//creer une position de l image
+        position_btn_quit.x=290;
+        position_btn_quit.y=400;
+        btn_quit = IMG_Load("btn_quit.png");
+        SDL_BlitSurface(btn_quit,NULL,ecran,&position_btn_quit);
+
+	//gerer le son
+	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) == -1) //Initialisation de l'API Mixer
+	   {
+	      return EXIT_SUCCESS;
+	   }
+	Mix_AllocateChannels(10); // jouer un maximum de 10 sons en même temps,
+   	Mix_Volume(1, MIX_MAX_VOLUME); //Mettre à mi-volume le post 1
+   	Mix_Chunk *son;//Créer un pointeur pour stocker un .WAV
+	son = Mix_LoadWAV("pan.wav"); //Charger un wav dans un pointeur
+	Mix_VolumeChunk(son, MIX_MAX_VOLUME); //Mettre un volume pour ce wav
+
+	//gerer les evenements du clavier et souris
+	int continuer=1;
+	SDL_Event event;
+	SDL_EnableKeyRepeat(10, 10); /* Activation de la répétition des touches */
+	    while (continuer)
+	    {
+		SDL_WaitEvent(&event);
+n		switch(event.type)
+		{
+		    case SDL_QUIT:
+		        continuer = 0;
+		        break;
+		    case SDL_KEYDOWN:
+		        switch(event.key.keysym.sym)
+		        {
+		            case  SDLK_UP:
+              
+		                break;
+		            case SDLK_DOWN:
+		                
+		                break;
+		            case SDLK_RIGHT:
+		                
+		                break;
+		            case SDLK_LEFT:
+		                
+		                break;
+		        }
+		        break;
+		     case SDL_MOUSEMOTION:
+		                if((event.motion.x>=position_btn_play.x +27 && event.motion.x <= position_btn_play.x+220-27 && event.motion.y>=position_btn_play.y+22 && event.motion.y<=position_btn_play.y+98-22)&&interieur==0)
+		                {
+		                        btn_play = IMG_Load("btn_play_touched.png");
+					interieur=1;
+		                }
+				if((event.motion.x>=position_btn_options.x+27 && event.motion.x <= position_btn_options.x+220-27 && event.motion.y>=position_btn_options.y+22 && event.motion.y<=position_btn_options.y+98-22)&&interieur==0)
+		                {
+		                        btn_options = IMG_Load("btn_options_touched.png");
+					interieur=2;
+		                }
+				if((event.motion.x>=position_btn_quit.x+27 && event.motion.x <= position_btn_quit.x+220-27 && event.motion.y>=position_btn_quit.y+22 && event.motion.y<=position_btn_quit.y+98-22)&&interieur==0)
+		                {
+		                        btn_quit = IMG_Load("btn_quit_touched.png");
+					interieur=3;
+		                }
+				if(!(event.motion.x>=position_btn_play.x+27 && event.motion.x <= position_btn_play.x+220-27 && event.motion.y>=position_btn_play.y+22 && event.motion.y<=position_btn_play.y+98-22)
+&&!(event.motion.x>=position_btn_options.x+27 && event.motion.x <= position_btn_options.x+220-27 && event.motion.y>=position_btn_options.y+22 && event.motion.y<=position_btn_options.y+98-22)
+&&!(event.motion.x>=position_btn_quit.x+27 && event.motion.x <= position_btn_quit.x+220-27 && event.motion.y>=position_btn_quit.y+22 && event.motion.y<=position_btn_quit.y+98-22)
+&&interieur!=0)
+		                {
+		                        if(interieur==1)btn_play = IMG_Load("btn_play.png");
+					if(interieur==2)btn_options = IMG_Load("btn_options.png");
+					if(interieur==3)btn_quit = IMG_Load("btn_quit.png");
+					interieur=0;
+		                }
+		        break;
+
+		     case SDL_MOUSEBUTTONDOWN: 
+			switch(event.button.button)
+		        {
+		            case SDL_BUTTON_LEFT:
+				{
+					if((event.button.x>=position_btn_play.x +27 && event.button.x <= position_btn_play.x+220-27 && event.button.y>=position_btn_play.y+22 && event.button.y<=position_btn_play.y+98-22))
+		                {
+		                        btn_play = IMG_Load("btn_play_clicked.png");
+					interieur=4;
+					Mix_PlayChannel(1, son, 0);//Joue le son 1 sur le canal 1 ; le joue une fois (0 + 1)
+		                }
+				if((event.button.x>=position_btn_options.x+27 && event.button.x <= position_btn_options.x+220-27 && event.button.y>=position_btn_options.y+22 && event.button.y<=position_btn_options.y+98-22))
+		                {
+		                        btn_options = IMG_Load("btn_options_clicked.png");
+					interieur=5;
+					Mix_PlayChannel(1, son, 0);
+		                }
+				if((event.button.x>=position_btn_quit.x+27 && event.button.x <= position_btn_quit.x+220-27 && event.button.y>=position_btn_quit.y+22 && event.button.y<=position_btn_quit.y+98-22))
+		                {
+		                        btn_quit = IMG_Load("btn_quit_clicked.png");
+					interieur=6;
+					Mix_PlayChannel(1, son, 0);
+		                }
+				}
+		                break;
+		        }
+		        break;
+
+			case SDL_MOUSEBUTTONUP: 
+			switch(event.button.button)
+		        {
+		            case SDL_BUTTON_LEFT:
+				{
+					if((event.button.x>=position_btn_play.x +27 && event.button.x <= position_btn_play.x+220-27 && event.button.y>=position_btn_play.y+22 && event.button.y<=position_btn_play.y+98-22))
+		                {
+		                        btn_play = IMG_Load("btn_play.png");
+					interieur=7;
+		                }
+				if((event.button.x>=position_btn_options.x+27 && event.button.x <= position_btn_options.x+220-27 && event.button.y>=position_btn_options.y+22 && event.button.y<=position_btn_options.y+98-22))
+		                {
+		                        btn_options = IMG_Load("btn_options.png");
+					interieur=8;
+		                }
+				if((event.button.x>=position_btn_quit.x+27 && event.button.x <= position_btn_quit.x+220-27 && event.button.y>=position_btn_quit.y+22 && event.button.y<=position_btn_quit.y+98-22))
+		                {
+		                        btn_quit = IMG_Load("btn_quit.png");
+					interieur=9;
+		                }
+				}
+		                break;
+		        }
+		        break;
+		}
+		if(interieur!=interieur2)
+		{
+			interieur2=interieur;
+			SDL_BlitSurface(image,NULL,ecran,&position_fond);
+			SDL_BlitSurface(btn_play,NULL,ecran,&position_btn_play);
+			SDL_BlitSurface(btn_options,NULL,ecran,&position_btn_options);
+			SDL_BlitSurface(btn_quit,NULL,ecran,&position_btn_quit);
+		}
+		SDL_Flip(ecran);
+	    }
+
+
+
+	SDL_Flip(ecran);//mise a jour de l ecran
+
+	Mix_FreeChunk(son);//Libération du son 1
+ 	Mix_CloseAudio(); //Fermeture de l'API
+
+	pause();
+	SDL_FreeSurface(texte);
+	SDL_Quit();//arreter SDL
+
+	return EXIT_SUCCESS;
+}
+
+void pause()
+{
+    int continuer = 1;
+    SDL_Event event;
+ 
+    while (continuer)
+    {
+        SDL_WaitEvent(&event);
+        switch(event.type)
+        {
+            case SDL_QUIT:
+                continuer = 0;
+        }
+    }
+}
